@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+        table, td, th 
+        {
+          border: 1px solid;
+        }
+        
+        table 
+        {
+          width: 100%;
+          border-collapse: collapse;
+        }
+</style>
+</head>
+<body onload="details()"> 
+    <table id="list">
+
+    </table>
+</body>
+<script>
+    function details()
+    {
+        let name = localStorage.getItem("name"); 
+        let age = localStorage.getItem("age");
+        let gender = localStorage.getItem("gender");
+        let phone = localStorage.getItem("phone");
+        let date = localStorage.getItem("date");
+        let covertype = localStorage.getItem("coverType");
+        let model = localStorage.getItem("model");
+        let fuel = localStorage.getItem("fuel");
+        let carAge = localStorage.getItem("carAge");
+        let claim = localStorage.getItem("claim");
+        let millage = localStorage.getItem("millage");
+        let carValue = localStorage.getItem("carValue");
+        let sec = localStorage.getItem("sec");
+        let usefor = localStorage.getItem("usefor");
+        let sum = localStorage.getItem("sum");
+        let prices = JSON.parse(localStorage.getItem("price"));
+
+        let list = document.getElementById("list");
+
+        list.innerHTML += "<tr><td>Name: <mark>" + name + "</mark></td><td>€0</td></tr>";
+        list.innerHTML += "<tr><td>Age: <mark>" + age + "</mark></td><td>€" + prices[0] + "</td></tr>";
+        list.innerHTML += "<tr><td>Gender: <mark>" + gender + "</mark></td><td>€" + prices[1] + "</td></tr>";
+        list.innerHTML += "<tr><td>Phone: <mark>" + phone + "</mark></td><td>€0</td></tr>";
+        list.innerHTML += "<tr><td>Date too: <mark>" + date + "</mark></td><td>€0</td></tr>";
+        list.innerHTML += "<tr><td>Cover Type: <mark>" + covertype + "</mark></td><td>€" + prices[2] + "</td></tr>";
+        list.innerHTML += "<tr><td>Model: <mark>" + model + "</mark></td><td>€0</td></tr>";
+        list.innerHTML += "<tr><td>fuel type: <mark>" + fuel + "</mark></td><td>€" + prices[3] + "</td></tr>";
+        list.innerHTML += "<tr><td>Car Age: <mark>" + carAge + "</mark></td><td>€" + prices[4] + "</td></tr>";
+        list.innerHTML += "<tr><td>Claim: <mark>" + claim + "</mark></td><td>€" + prices[5] + "</td></tr>";
+        list.innerHTML += "<tr><td>Millage: <mark>" + millage + "</mark></td><td>€" + prices[6] + "</td></tr>";
+        list.innerHTML += "<tr><td>Car Value: <mark>" + carValue + "</mark></td><td>€" + Number.parseFloat(prices[7]).toFixed(2) + "</td></tr>";
+        list.innerHTML += "<tr><td>Security type: <mark>" + sec + "</mark></td><td>€" + prices[8] + "</td></tr>";
+        list.innerHTML += "<tr><td>Car used for: <mark>" + usefor + "</mark></td><td>€" + prices[9] + "</td></tr>";
+        list.innerHTML += "<tr><th>Total Price: </td><td>€" + Number.parseFloat(sum).toFixed(2) + "</th></tr>";
+    }
+
+    window.onbeforeunload = ()=> 
+    {
+        localStorage.clear();
+    }
+
+</script>
+</html>

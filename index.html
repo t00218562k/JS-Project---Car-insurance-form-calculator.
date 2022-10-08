@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang='cs'>
+  <head>
+    <title>Ibrahim Khalid</title>
+    <meta charset='utf-8'>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <header>
+    <div>
+        <h1>Car insurance Calculator</h1>
+        <div id="time">240</div>
+    </div>   
+  </header>
+  <body onload="timer()">
+    <div class="container"> 
+        <form action="" method="post" class="inputs" id="mainForm" autocomplete="off">
+            <input type="text" id="name" placeholder="Full Name">
+
+            <input type="number" id="userAge" placeholder="Please Enter Your Age">
+
+            <div id="userGender" class="radio">
+                <div>
+                    <input type="radio" name="gender" value="male">
+                    <label for="male">Male</label>
+                </div>
+                <div>
+                    <input type="radio" name="gender" value="female">
+                    <label for="male">Female</label>
+                </div>
+            </div>
+
+            <input type="text" id="phone" placeholder="Phone">
+            
+            <input type="date" id="inputDate" value="2022-01-01">
+            
+            <select id="coverType">
+                <option value="">Select Cover Type</option>
+                <option value="full">Fully Comprehensive </option>
+                <option value="third">Third Party Fire and theft</option>
+            </select>
+
+            <select id="make" onchange="populateMake(document.getElementById('make').value)">
+                <option value="">Select car Make</option>
+                <option value="bmw">BMW</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+                <option value="volkswagen">Volkswagen</option>
+                <option value="ford">Ford</option>
+            </select>
+
+            <select id="makeType">
+                <option value="">Select car Model</option>
+            </select>
+
+            <select id="fuel">
+                <option value="">Select Fuel Type</option>
+                <option value="diesel">Diesel</option>
+                <option value="petrol">Petrol</option>
+                <option value="Hybrid">Hybrid</option>
+            </select>
+
+            <input type="number" id="carAge" placeholder="How old is your car in years"> 
+
+            <select id="claimFree">
+                <option value="">Select Claim Free Length</option>
+                <option value="1">1 year</option>
+                <option value="2">2 years</option>
+                <option value="3">3 years</option>
+                <option value="4">4 years</option>
+                <option value="5">5+ years</option>
+            </select>
+
+            <input type="number" id="millage" placeholder="How many miles are driven yearly">
+
+            <input type="number" id="carValue" placeholder="Value of car">
+
+            <h2>Security</h2>
+            <div class="security" id="sec">
+                <input type="radio" name="security" id="none" value="100">
+                <label for="none">None</label>
+
+                <input type="radio" name="security" id="alarm" value="70">
+                <label for="Alarm">Alarm</label>
+
+                <input type="radio" name="security" id="immobiliser" value="50">
+                <label for="Immobiliser">Immobiliser</label>
+
+                <input type="radio" name="security" id="aAndB" value="30">
+                <label for="aAndB">Alarm & Immobiliser</label>
+
+                <input type="radio" name="security" id="tracking" value="10">
+                <label for="Tracking">Tracking device alarm & Immobiliser</label>
+            </div>
+
+            <h2>Car used for</h2>
+            <div class="carUseFor" id="usefor">
+                <input type="radio" name="carUse" id="social" value="30">
+                <label for="male">Social Domestic and Pleasure</label>
+                <input type="radio" name="carUse" id="classOne" value="50">
+                <label for="male">Class 1 Use</label>
+            </div>     
+        </form>
+    </div>
+
+    <button id="submit"> Submit</button>
+
+    <script>
+        var valids = new Array(10).fill(false);
+        var price = new Array(10);
+
+        function updateTime(time)
+        {     		
+			setInterval(()=>
+			{
+				let timeDig = document.getElementById("time").innerHTML;
+				timeDig = timeDig -1;
+				
+				document.getElementById("time").innerHTML = timeDig;
+			}, 1000);
+           
+        }
+
+        function nameValid(name)
+        {
+            //got this regex from https://stackoverflow.com/questions/11522529/regexp-for-checking-the-full-name
+            let nameRegex = /^([\w]{1,})+\s+([\w\s]{1,})+$/i; 
+            
+            if(nameRegex.test(name.value))
+            {
+                name.style.backgroundColor = "white";
+                return true;
+            }
+
+            name.style.backgroundColor = "red";
+            return false;            
+        }
+
+        function userAge(age)
+        {
+            if(age.value >=17)
+            {
+                age.style.backgroundColor= "white";
+
+                if(age.value < 25)
+                    price[0] = 500;              
+
+                else if(age.value>=25 && age.value<=30)
+                    price[0] = 350;
+
+                else if(age.value>30 && age.value<=65)
+                    price[0] = 200;
+
+                else if(age.value>65)
+                    price[0] = 500;
+
+                return true;
+            }
+
+            age.style.backgroundColor = "red";
+            return false;           
+        }
+
+        function gender(gen)
+        {
+            let userGen = document.querySelector("[name='gender']:checked")
+
+            if(document.querySelector("[name='gender']:checked"))
+            {
+                gen.style.backgroundColor = "white";
+
+                if(userGen.value == "male")
+                    price[1] = 400;
+                
+                else if(userGen.value == "female")
+                    price[1] = 250;
+
+                return true;
+            }
+
+            gen.style.backgroundColor = "red";
+            return false;
+        }
+
+        function phoneValid(phone)
+        {
+            //got this regex from https://stackoverflow.com/questions/21049557/phone-number-validation-regular-expression-consist-one-plus-sign-in-start-and-pr
+            let phoneRegex = /^\+[0-9]+$/;
+ 
+            if(phoneRegex.test(phone.value) && (phone.value.length >= 6 && phone.value.length <= 15))
+            {
+                phone.style.backgroundColor = "white";
+                return true;
+            }
+
+            phone.style.backgroundColor = "red";
+            return false;
+        }
+
+        function dateValid(date)
+        {
+            let todaysDate = new Date();
+            let day = todaysDate.getDate();
+            let month = todaysDate.getMonth() + 1;
+            let year = todaysDate.getFullYear();
+
+            if(date.value.substring(0,4) > year )    
+            {
+                date.style.backgroundColor = "white";
+                return true;
+            }
+			if(date.value.substring(5,7) > month)
+			{
+				date.style.backgroundColor = "white";
+                return true;
+			}
+			if(date.value.substring(5,7) == month && date.value.substring(8) > day)
+			{
+				date.style.backgroundColor = "white";
+                return true;
+			}
+
+            date.style.backgroundColor = "red";
+            return false;
+        }
+
+        function typeofcoverValid(type)
+        {
+            if(type.value != "")
+            {
+                type.style.backgroundColor = "white";
+
+                if(type.value == "full")
+                    price[2] = 400;
+                else
+                    price[2] = 200;
+
+                return true;
+            }
+
+            type.style.backgroundColor = "red";
+            return false;
+        }
+
+        function populateMake(type)
+        {
+            var makeType = document.getElementById("makeType");
+            if(type == "bmw")
+            {
+                makeType.innerHTML = "<option value='1 Series'>1 Series</option>";
+                makeType.innerHTML += "<option value='3 Series'>3 Series</option>";
+                makeType.innerHTML += "<option value='5 Series'>5 Series</option>";
+                makeType.innerHTML += "<option value='7 Series'>7 Series</option>";
+                makeType.innerHTML += "<option value='X1'>X1</option>";
+                makeType.innerHTML += "<option value='X3'>X3</option>";
+                makeType.innerHTML += "<option value='X5'>X5</option>";
+                makeType.innerHTML += "<option value='X6'>X6</option>";
+                makeType.innerHTML += "<option value='z4'>Z4</option>";
+            }
+            else if(type == "mercedes")
+            {
+                makeType.innerHTML = "<option value='A Class'>A Class</option>";
+                makeType.innerHTML += "<option value='B Class'>B Class</option>";
+                makeType.innerHTML += "<option value='C Class'>C Class</option>";
+                makeType.innerHTML += "<option value='E Class'>E Class</option>";
+                makeType.innerHTML += "<option value='S Class'>S Class</option>";
+                makeType.innerHTML += "<option value='SL Class'>SL Class</option>";
+                makeType.innerHTML += "<option value='G Class'>G Class</option>";
+            }
+            else if(type == "audi")
+            {
+                makeType.innerHTML = "<option value='A1'>A1</option>";
+                makeType.innerHTML += "<option value='A2'>A2</option>";
+                makeType.innerHTML += "<option value='A3'>A3</option>";
+                makeType.innerHTML += "<option value='A4'>A4</option>";
+                makeType.innerHTML += "<option value='A5'>A5</option>";
+                makeType.innerHTML += "<option value='A6'>A6</option>";
+                makeType.innerHTML += "<option value='A7'>A7</option>";
+                makeType.innerHTML += "<option value='A8'>A8</option>";
+            }
+            else if(type == "volkswagen")
+            {
+                makeType.innerHTML = "<option value='Golf'>Golf</option>";
+                makeType.innerHTML += "<option value='Touareg'>Touareg</option>";      
+                makeType.innerHTML += "<option value='Tiguan'>Tiguan</option>";
+                makeType.innerHTML += "<option value='Polo'>Polo</option>";
+                makeType.innerHTML += "<option value='Passat'>Passat</option>";
+            }
+            else if(type = "ford")
+            {
+                makeType.innerHTML = "<option value='Fiesta'>Fiesta</option>";
+                makeType.innerHTML += "<option value='Focus'>Focus</option>";
+                makeType.innerHTML += "<option value='Mondeo'>Mondeo</option>";
+                makeType.innerHTML += "<option value='Fusion'>Fusion</option>";
+                makeType.innerHTML += "<option value='Transit'>Transit</option>";
+                makeType.innerHTML += "<option value='Mustang'>Mustang</option>";
+                
+            }
+            else
+                makeType.innerHTML = "<option value=''>Select car Model</option>"
+            
+        }
+
+        function modelValid(model)
+        {
+            if(model.value != "")
+            {
+                model.style.backgroundColor = "white";
+                return true;
+            }
+
+            model.style.backgroundColor = "red";
+            return false;
+        }
+
+        function fuelValid(fuel)
+        {
+            if(fuel.value != "")
+            {
+                fuel.style.backgroundColor = "white";
+
+                if(fuel.value == "diesel")
+                    price[3] = 50;
+
+                else if(fuel.value == "petrol")
+                    price[3] = 40;
+
+                else
+                    price[3] = 20;
+                
+                return true;
+            }
+
+            fuel.style.backgroundColor = "red";
+            return false;
+        }
+
+        function carAgeValid(carValue)
+        {
+            if(carValue.value > 0)
+            {
+                carValue.style.backgroundColor = "white";
+
+                if(carAge.value < 3)              
+                    price[4] = 100;
+               
+                else if(carAge.value > 3 && carAge.value < 6)
+                    price[4] = 70;
+
+                else if(carAge.value > 6 && carAge.value < 10)
+                    price[4] = 50;
+
+                else 
+                    price[4] = 20;
+
+                return true;
+            }
+    
+            carValue.style.backgroundColor = "red";
+            return false;
+        }
+
+        function claimFreeValid(claim)
+        {
+            if(claim.value != "")
+            {
+                claim.style.backgroundColor = "white";
+
+                if(claim.value == "1")
+                    price[5] = 100;
+                else if (claim.value == "2")
+                    price[5] = 80;
+                else if (claim.value == "3")
+                    price[5] = 60;
+                else if (claim.value == "4")
+                    price[5] = 40;
+                else
+                    price[5] = 20;
+
+                return true;
+            }
+
+            claim.style.backgroundColor = "red";
+            return false;
+        }
+
+        function millageValid(mill)
+        {
+            if(mill.value > 0)
+            {
+                mill.style.backgroundColor = "white";
+
+                if(mill.value < 15000)
+                    price[6] = 30;
+                else if(mill.value > 15000  && mill.value < 25000)
+                    price[6] = 40;
+                else
+                    price[6] = 50;
+
+                return true;
+            }
+
+            mill.style.backgroundColor = "red";
+            return false;
+        }
+
+        function carValueValid(car)
+        {
+            if(car.value > 0)
+            {
+                let perc = (car.value * 0.10);
+                price[7] = perc;
+                car.style.backgroundColor = "white";
+                return true;
+            }
+
+            car.style.backgroundColor = "red";
+            return false;
+        }
+
+        function securityValid(sec)
+        {
+            let secPicked = document.querySelector("[name='security']:checked")
+
+            if(document.querySelector("[name='security']:checked"))
+            {
+                sec.style.backgroundColor = "white";
+
+                if(secPicked == "none")
+                    price[8] = 100;
+                else if(secPicked== "alarm")
+                    price[8] = 70;
+                else if(secPicked == "immobiliser")
+                    price[8] = 50;
+                else if(secPicked == "aAndB")
+                    price[8] = 30;
+                else
+                    price[8] = 10;
+
+                return true;
+            }
+
+            sec.style.backgroundColor = "red";
+            return false;
+        }
+
+        function useForValid(usefor)
+        {
+            let useForPicked = document.querySelector("[name='carUse']:checked")
+
+            if(document.querySelector("[name='carUse']:checked"))
+            {
+                usefor.style.backgroundColor = "white";
+
+                if(useForPicked == "none")
+                    price[9] = 100;
+                else
+                    price[9] = 10;
+
+                return true;
+            }
+
+            usefor.style.backgroundColor = "red";
+            return false;   
+        }
+		
+        function timer()
+        {
+			updateTime("1");
+            
+            setTimeout(()=>
+            {
+                window.location.reload();
+                alert("Whoops you ran out of time")
+            }, 400000);
+        }
+
+        function makeHelp(message, event)
+        {
+            let help = document.createElement("span");
+            help.setAttribute("class", "help");
+            help.setAttribute("id", "helpBox");
+            help.style.width = "20%";
+            help.style.height = "10%";
+            help.style.left = event.pageX + "px";
+            help.style.top = event.pageY + "px";
+            help.style.background = "linear-gradient( 90deg, #EEEEEE 0%, #EEEEEE 40%, #DDDDDD 50%, #DDDDDD 55%, #EEEEEE 65%, #EEEEEE 100% )";
+            help.style.padding = "20px";
+            help.style.fontSize = "140%";
+            help.style.color = "grey"; 
+            //console.log(event);
+            help.innerHTML = message;
+            document.body.appendChild(help);
+        }
+
+        function deleteHelp()
+        {
+            let help = document.getElementById("helpBox");
+            help.remove();
+        }
+  
+        function validateForm(name, age, gen, phone, date, coverType, 
+        model, fuel, carAge, claim, millage, carValue, sec, usefor)
+        {
+            let validArray = [nameValid(name), userAge(age), gender(gen), phoneValid(phone),
+             dateValid(date), typeofcoverValid(coverType), modelValid(model), fuelValid(fuel),
+            carAgeValid(carAge), claimFreeValid(claim), millageValid(millage), 
+            carValueValid(carValue), securityValid(sec), useForValid(usefor)];
+        
+            for(let i = 0; i < validArray.length; i++)
+            {
+                if(validArray[i] == false)
+                {
+                    alert("Please fill in all fields with valid information");
+                    return false;
+                }
+            }
+
+            let sum = 0;
+            for(let i = 0; i < price.length; i++)
+            {
+                sum += price[i];
+            }
+    
+            let userGen = document.querySelector("[name='gender']:checked")
+            let secPicked = document.querySelector("[name='security']:checked")
+            let useForPicked = document.querySelector("[name='carUse']:checked")
+
+            localStorage.setItem("name", name.value);
+            localStorage.setItem("age", age.value);
+            localStorage.setItem("gender", userGen.value);
+            localStorage.setItem("phone", phone.value);
+            localStorage.setItem("date", date.value);
+            localStorage.setItem("coverType", coverType.value);
+            localStorage.setItem("model", model.value);
+            localStorage.setItem("fuel", fuel.value);
+            localStorage.setItem("carAge", carAge.value);
+            localStorage.setItem("claim", claim.value);
+            localStorage.setItem("millage", millage.value);
+            localStorage.setItem("carValue", carValue.value);
+            localStorage.setItem("sec", secPicked.value);
+            localStorage.setItem("usefor", useForPicked.value);
+            localStorage.setItem("sum", sum);
+            localStorage.setItem("price", JSON.stringify(price));
+
+            window.open('popup.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+        }
+
+        let time = document.getElementById("time");
+        let name = document.getElementById("name");
+        let age = document.getElementById("userAge");
+        let uGender = document.getElementById("userGender");
+        let phone = document.getElementById("phone");
+        let date = document.getElementById("inputDate");
+        let coverType = document.getElementById("coverType");
+        let make = document.getElementById("make");
+        let model = document.getElementById("makeType");
+        let fuel = document.getElementById("fuel");
+        let carAge = document.getElementById("carAge");
+        let claimFree = document.getElementById("claimFree");
+        let millage = document.getElementById("millage");
+        let carValue = document.getElementById("carValue");
+        let sec = document.getElementById("sec");
+        let usefor = document.getElementById("usefor");
+        let button = document.getElementById("submit");
+
+        time.addEventListener("onload", ()=> updateTime(time), false);
+
+        date.addEventListener("mouseenter", (event)=> makeHelp("Select a date in the future, for your policy", event), false);
+        date.addEventListener("mouseleave", ()=> deleteHelp(), false);
+
+        claimFree.addEventListener("mouseenter",(event)=> makeHelp("how long have you been claim free for", event), false);
+        claimFree.addEventListener("mouseleave", ()=> deleteHelp(), false);
+
+        coverType.addEventListener("mouseenter",(event)=> makeHelp("what type of insurance cover would you like", event), false);
+        coverType.addEventListener("mouseleave", ()=> deleteHelp(), false);
+
+        carValue.addEventListener("mouseenter",(event)=> makeHelp("the value of your car currently", event), false);
+        carValue.addEventListener("mouseleave", ()=> deleteHelp(), false);
+
+        social.addEventListener("mouseenter",(event)=> makeHelp("for your won personal use", event), false);
+        social.addEventListener("mouseleave", ()=> deleteHelp(), false);
+
+        classOne.addEventListener("mouseenter",(event)=> makeHelp("car is used for work", event), false);
+        classOne.addEventListener("mouseleave", ()=> deleteHelp(), false);
+
+        name.addEventListener("change",()=> nameValid(name), false);
+
+        age.addEventListener("change",()=> userAge(age), false);
+
+        phone.addEventListener("change",()=> phoneValid(phone), false);
+
+        date.addEventListener("change",()=> dateValid(date), false);
+
+        uGender.addEventListener("change",()=> gender(uGender), false);
+
+        coverType.addEventListener("change",()=> typeofcoverValid(coverType), false);
+
+        model.addEventListener("change", ()=> modelValid(model), false);
+
+        fuel.addEventListener("change", ()=> fuelValid(fuel), false);
+
+        carAge.addEventListener("change", ()=> carAgeValid(carAge), false);
+
+        claimFree.addEventListener("change", ()=> claimFreeValid(claimFree), false);
+
+        millage.addEventListener("change", ()=> millageValid(millage), false);
+
+        carValue.addEventListener("change", ()=> carValueValid(carValue), false);
+
+        sec.addEventListener("change", ()=> securityValid(sec), false);
+
+        usefor.addEventListener("change", ()=> useForValid(usefor), false);
+
+        button.addEventListener("click", ()=>
+            validateForm(name, age, uGender, phone, date, coverType, model, fuel
+            , carAge, claimFree, millage, carValue, sec, usefor),
+         false);     
+    </script>
+  </body>
+  <footer>
+    <p>&copy; 2022 Ibrahim Khalid</p>   
+  </footer>
+</html>
